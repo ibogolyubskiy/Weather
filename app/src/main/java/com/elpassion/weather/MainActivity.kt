@@ -1,4 +1,4 @@
-package com.elpassion.crweather
+package com.elpassion.weather
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.Observer
@@ -6,13 +6,15 @@ import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
+import android.view.Menu
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
+import com.elpassion.weather.utils.toast
 import kotlinx.android.synthetic.main.activity_main.drawer
 import kotlinx.android.synthetic.main.activity_main.toolbar
 import kotlinx.android.synthetic.main.content_main.progress
 import kotlinx.android.synthetic.main.content_main.recycler
-import kotlinx.android.synthetic.main.navigation.navigation
+import kotlinx.android.synthetic.main.view_navigation.navigation
 
 class MainActivity : AppCompatActivity() {
 
@@ -26,18 +28,18 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         drawer?.run {
             val toggle = ActionBarDrawerToggle(
-                    this@MainActivity,
-                    drawer,
-                    toolbar,
-                    R.string.navigation_drawer_open,
-                    R.string.navigation_drawer_close
+                this@MainActivity,
+                drawer,
+                toolbar,
+                R.string.navigation_drawer_open,
+                R.string.navigation_drawer_close
             )
             addDrawerListener(toggle)
             toggle.syncState()
         }
         navigation.setNavigationItemSelectedListener {
             drawer?.closeDrawers()
-            model.action(SelectCity(it.title.toString()))
+            model.selectCity(it.title.toString())
         }
         recycler.adapter = adapter
         initModel()
@@ -61,12 +63,19 @@ class MainActivity : AppCompatActivity() {
             item.isChecked = item.title == city
     }
 
-    private fun displayCharts(charts: List<Chart>) { adapter.charts = charts }
+    private fun displayCharts(charts: List<Chart>) {
+        adapter.charts = charts
+    }
 
     private fun displayMessage(message: String) {
         if (message.isNotBlank()) toast(message)
     }
 
-    private fun <T> LiveData<T>.observe(observe: (T?) -> Unit)
-            = observe(this@MainActivity, Observer { observe(it) })
+    private fun <T> LiveData<T>.observe(observe: (T?) -> Unit) = observe(this@MainActivity, Observer { observe(it) })
+}
+
+operator fun Menu.iterator() = object : Iterator<android.view.MenuItem> {
+    private var current = 0
+    override fun hasNext() = current < size()
+    override fun next() = getItem(current++)
 }

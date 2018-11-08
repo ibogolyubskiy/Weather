@@ -1,4 +1,4 @@
-package com.elpassion.crweather
+package com.elpassion.weather.data
 
 import retrofit2.Call
 import retrofit2.Retrofit
@@ -6,7 +6,7 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-object OpenWeatherMapApi {
+object ApiService {
 
     private const val URL = "https://api.openweathermap.org"
 
@@ -14,12 +14,14 @@ object OpenWeatherMapApi {
         /** Cloudiness, % */
         var all: Int = 0
     }
+
     class Coord {
         /** Latitude */
         var lat: Float = 0f
         /** Longitude */
         var lon: Float = 0f
     }
+
     class City {
         /** City id as in [http://bulk.openweathermap.org/sample/] */
         var id: Long = 0
@@ -32,18 +34,21 @@ object OpenWeatherMapApi {
         /** City population */
         var population: Long = 0
     }
+
     class Wind {
         /** Wind speed. Unit Default: meter/sec, Metric: meter/sec, Imperial: miles/hour. */
         var speed: Float = 0f
         /** Wind direction, degrees (meteorological) */
         var deg: Float = 0f
     }
+
     class Sys {
         var message: Float = 0f
         var country: String? = null
         var sunrise: Long = 0
         var sunset: Long = 0
     }
+
     class Weather {
         /** Weather condition id */
         var id: Int = 0
@@ -54,6 +59,7 @@ object OpenWeatherMapApi {
         /** Group of weather parameters (Rain, Snow, Extreme, etc.) */
         var main: String? = null
     }
+
     class Main {
         /** Humidity, % */
         var humidity: Int = 0
@@ -78,6 +84,7 @@ object OpenWeatherMapApi {
         /** Atmospheric pressure on the ground level, hPa */
         var grnd_level: Float = 0f
     }
+
     class Temp {
         /** Min daily temperature. Unit Default: Kelvin, Metric: Celsius, Imperial: Fahrenheit. */
         var min: Float = 0f
@@ -92,6 +99,7 @@ object OpenWeatherMapApi {
         /** Morning temperature. Unit Default: Kelvin, Metric: Celsius, Imperial: Fahrenheit. */
         var morn: Float = 0f
     }
+
     class Forecast {
         var id: Long = 0
         /** Time of data forecasted, unix, UTC */
@@ -112,6 +120,7 @@ object OpenWeatherMapApi {
         /** Main conditions */
         var main: Main? = null
     }
+
     class DailyForecast {
         /** Time of data forecasted, unix, UTC */
         var dt: Long = 0
@@ -134,6 +143,7 @@ object OpenWeatherMapApi {
         /** Snow */
         var snow: Float = 0f
     }
+
     class Forecasts {
         /** City information */
         var city: City? = null
@@ -146,6 +156,7 @@ object OpenWeatherMapApi {
         /** Array of forecasts */
         var list: Array<Forecast>? = null
     }
+
     class DailyForecasts {
         /** City information */
         var city: City? = null
@@ -166,10 +177,11 @@ object OpenWeatherMapApi {
          * @param city City name + optional country code after comma
          * @param units Default (null) means in Kelvin, "metric" means in Celsius, "imperial" means in Fahrenheit
          */
-        @GET("/data/2.5/weather") fun getForecastByCity(
-                @Query("appid") appid: String,
-                @Query("q") city: String,
-                @Query("units") units: String? = null): Call<Forecast>
+        @GET("/data/2.5/weather")
+        fun getForecastByCity(
+            @Query("appid") appid: String,
+            @Query("q") city: String,
+            @Query("units") units: String? = null): Call<Forecast>
 
         /**
          * Up to five days forecasts with data every 3 hours for given city name
@@ -178,11 +190,12 @@ object OpenWeatherMapApi {
          * @param cnt Optional maximum number of forecasts in returned "list"
          * @param units Default (null) means in Kelvin, "metric" means in Celsius, "imperial" means in Fahrenheit
          */
-        @GET("/data/2.5/forecast") fun getForecastsByCity(
-                @Query("appid") appid: String,
-                @Query("q") city: String,
-                @Query("cnt") cnt: Long? = null,
-                @Query("units") units: String? = null): Call<Forecasts>
+        @GET("/data/2.5/forecast")
+        fun getForecastsByCity(
+            @Query("appid") appid: String,
+            @Query("q") city: String,
+            @Query("cnt") cnt: Long? = null,
+            @Query("units") units: String? = null): Call<Forecasts>
 
         /**
          * Up to 16 days daily forecasts for given city
@@ -191,16 +204,17 @@ object OpenWeatherMapApi {
          * @param cnt Optional maximum number of daily forecasts in returned "list"
          * @param units Default (null) means in Kelvin, "metric" means in Celsius, "imperial" means in Fahrenheit
          */
-        @GET("/data/2.5/forecast/daily") fun getDailyForecastsByCity(
-                @Query("appid") appid: String,
-                @Query("q") city: String,
-                @Query("cnt") cnt: Long? = null,
-                @Query("units") units: String? = null): Call<DailyForecasts>
+        @GET("/data/2.5/forecast/daily")
+        fun getDailyForecastsByCity(
+            @Query("appid") appid: String,
+            @Query("q") city: String,
+            @Query("cnt") cnt: Long? = null,
+            @Query("units") units: String? = null): Call<DailyForecasts>
     }
 
     private val retrofit = Retrofit.Builder()
-            .baseUrl(URL)
-            .addConverterFactory(MoshiConverterFactory.create()).build()
+        .baseUrl(URL)
+        .addConverterFactory(MoshiConverterFactory.create()).build()
 
     val service = retrofit.create(Service::class.java)!!
 }

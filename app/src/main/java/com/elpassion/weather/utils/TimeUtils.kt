@@ -1,4 +1,4 @@
-package com.elpassion.crweather
+package com.elpassion.weather.utils
 
 val currentTimeMs get() = System.currentTimeMillis()
 

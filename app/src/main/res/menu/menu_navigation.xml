@@ -4,34 +4,34 @@
     <group android:checkableBehavior="single">
         <item
             android:icon="@drawable/ic_location"
-            android:title="Wroclaw"/>
+            android:title="Moscow" />
         <item
             android:icon="@drawable/ic_location"
-            android:title="Warsaw"/>
+            android:title="London" />
         <item
             android:icon="@drawable/ic_location"
-            android:title="Paris"/>
+            android:title="Paris" />
         <item
             android:icon="@drawable/ic_location"
-            android:title="London"/>
+            android:title="Berlin" />
         <item
             android:icon="@drawable/ic_location"
-            android:title="New York"/>
+            android:title="Rome" />
         <item
             android:icon="@drawable/ic_location"
-            android:title="Concord"/>
+            android:title="New York" />
         <item
             android:icon="@drawable/ic_location"
-            android:title="Vatican"/>
+            android:title="Delhi" />
         <item
             android:icon="@drawable/ic_location"
-            android:title="Sosnowiec"/>
+            android:title="Beijing" />
         <item
             android:icon="@drawable/ic_location"
-            android:title="Alta"/>
+            android:title="Tokio" />
         <item
             android:icon="@drawable/ic_location"
-            android:title="Bad City, xxx"/>
+            android:title="Non-existent city" />
     </group>
 
 </menu>

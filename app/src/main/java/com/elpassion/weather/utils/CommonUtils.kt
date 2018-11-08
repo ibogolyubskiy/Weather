@@ -1,4 +1,4 @@
-package com.elpassion.crweather
+package com.elpassion.weather.utils
 
 import kotlinx.coroutines.CancellableContinuation
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -23,14 +23,14 @@ fun <T> List<T>.changes(destination: MutableList<Pair<T, T>> = ArrayList(size))
 }
 
 /**
- * @throws IllegalStateException
+ * @throws Throwable
  */
 suspend fun <T> Call<T>.await(): T = suspendCancellableCoroutine { continuation ->
 
     continuation.invokeOnCancellation { cancel() }
 
     val callback = object : Callback<T> {
-        override fun onFailure(call: Call<T>, t: Throwable) = continuation.invokeOnCancellation { throw t }
+        override fun onFailure(call: Call<T>, t: Throwable) = continuation.tryResume { throw t }
         override fun onResponse(call: Call<T>, response: Response<T>) = continuation.tryResume {
             response.isSuccessful || throw IllegalStateException("Http error ${response.code()}")
             response.body() ?: throw IllegalStateException("Response body is null")

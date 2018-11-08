@@ -1,11 +1,13 @@
-package com.elpassion.crweather
+package com.elpassion.weather.utils
 
 import android.graphics.Canvas
 import android.graphics.RectF
+import com.elpassion.weather.Chart
+import com.elpassion.weather.Point
 
 fun Point.scale(from: RectF, to: RectF) = Point(
-        x.scale(from.left..from.right, to.left..to.right),
-        y.scale(from.top..from.bottom, to.top..to.bottom)
+    x.scale(from.left..from.right, to.left..to.right),
+    y.scale(from.top..from.bottom, to.top..to.bottom)
 )
 
 val Canvas.area get() = area(widthRange, heightRange)
@@ -16,11 +18,9 @@ fun ClosedFloatingPointRange<Float>.portion(portion: Float) = portion.scale(0f..
 
 private val ClosedFloatingPointRange<Float>.span get() = endInclusive - start
 
-private fun Float.scale(fromRange: ClosedFloatingPointRange<Float>, toRange: ClosedFloatingPointRange<Float>)
-        = toRange.start + (this - fromRange.start) * toRange.span / fromRange.span
+private fun Float.scale(fromRange: ClosedFloatingPointRange<Float>, toRange: ClosedFloatingPointRange<Float>) = toRange.start + (this - fromRange.start) * toRange.span / fromRange.span
 
-private fun area(xRange: ClosedFloatingPointRange<Float>, yRange: ClosedFloatingPointRange<Float>)
-        = RectF(xRange.start, yRange.start, xRange.endInclusive, yRange.endInclusive)
+private fun area(xRange: ClosedFloatingPointRange<Float>, yRange: ClosedFloatingPointRange<Float>) = RectF(xRange.start, yRange.start, xRange.endInclusive, yRange.endInclusive)
 
 private val Canvas.widthRange get() = 0f..width.toFloat()
 

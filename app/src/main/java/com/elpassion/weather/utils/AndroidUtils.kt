@@ -1,4 +1,4 @@
-package com.elpassion.crweather
+package com.elpassion.weather.utils
 
 import android.content.Context
 import android.graphics.Canvas
@@ -7,9 +7,10 @@ import android.graphics.Paint
 import android.graphics.RectF
 import android.support.annotation.ColorInt
 import android.support.annotation.LayoutRes
-import android.view.Menu
 import android.view.ViewGroup
 import android.widget.Toast
+import com.elpassion.weather.Chart
+import com.elpassion.weather.Point
 
 private val CHART_PAINT = Paint().apply {
     style = Paint.Style.STROKE
@@ -33,24 +34,16 @@ private val TEXT_PAINT = Paint().apply {
     color = Color.GRAY
 }
 
-private val TEXT_LINE_HEIGHT = 20f
-
-operator fun Menu.iterator() = object : Iterator<android.view.MenuItem> {
-    private var current = 0
-    override fun hasNext() = current < size()
-    override fun next() = getItem(current++)
-}
+private const val TEXT_LINE_HEIGHT = 20f
 
 fun ViewGroup.inflate(@LayoutRes layoutId: Int, attachToRoot: Boolean = false): android.view.View {
     val inflater = android.view.LayoutInflater.from(context)
     return inflater.inflate(layoutId, this, attachToRoot)
 }
 
-fun Canvas.drawCircle(point: Point, radius: Float, paint: Paint)
-        = drawCircle(point.x, point.y, radius, paint)
+fun Canvas.drawCircle(point: Point, radius: Float, paint: Paint) = drawCircle(point.x, point.y, radius, paint)
 
-fun Canvas.drawLine(points: Pair<Point, Point>, paint: Paint)
-        = drawLine(points.first.x, points.first.y, points.second.x, points.second.y, paint)
+fun Canvas.drawLine(points: Pair<Point, Point>, paint: Paint) = drawLine(points.first.x, points.first.y, points.second.x, points.second.y, paint)
 
 fun Canvas.drawChart(chart: Chart) {
     drawChartAxes(chart)
@@ -66,7 +59,7 @@ fun Canvas.drawChart(chart: Chart) {
 private fun Canvas.drawChartAxes(chart: Chart) {
     val axesArea = insetArea
     drawBoundaries(axesArea, left = true, bottom = true)
-    for (portion in (0 .. 100 step 20).map { it / 100f }) {
+    for (portion in (0..100 step 20).map { it / 100f }) {
         val value = chart.outputRange.portion(portion).asMeasurementString
         val time = chart.inputRange.portion(portion).asTimeMs.asDateString
         drawText(time, axesArea.horizontalRange.portion(portion), axesArea.bottom + TEXT_LINE_HEIGHT + 4f, TEXT_PAINT)
@@ -75,7 +68,7 @@ private fun Canvas.drawChartAxes(chart: Chart) {
 }
 
 fun Canvas.drawChartLegend(chart: Chart) {
-    var textPosX = area.horizontalRange.portion(.9f)
+    val textPosX = area.horizontalRange.portion(.9f)
     var textPosY = TEXT_LINE_HEIGHT
     drawText("Updated at ${chart.timeMs.asTimeString}", textPosX, textPosY, TEXT_PAINT)
     for ((name, color, _) in chart.lines) {
@@ -86,9 +79,9 @@ fun Canvas.drawChartLegend(chart: Chart) {
 
 private val Canvas.insetArea get() = area.apply { inset(50f, 40f) }
 
-private val RectF.verticalRange get() = top .. bottom
+private val RectF.verticalRange get() = top..bottom
 
-private val RectF.horizontalRange get() = left .. right
+private val RectF.horizontalRange get() = left..right
 
 private fun Canvas.drawBoundaries(rect: RectF, paint: Paint = AXES_PAINT, left: Boolean = false, top: Boolean = false, right: Boolean = false, bottom: Boolean = false) {
     if (left) drawLine(rect.left, rect.top, rect.left, rect.bottom, paint)
@@ -97,7 +90,8 @@ private fun Canvas.drawBoundaries(rect: RectF, paint: Paint = AXES_PAINT, left: 
     if (bottom) drawLine(rect.left, rect.bottom, rect.right, rect.bottom, paint)
 }
 
-private fun Paint.withColor(@ColorInt acolor: Int)
-        = Paint().also { it.set(this); it.color = acolor }
+private fun Paint.withColor(@ColorInt acolor: Int) = Paint().also { it.set(this); it.color = acolor }
 
-fun Context.toast(message: CharSequence) { Toast.makeText(this, message, Toast.LENGTH_SHORT).show() }
+fun Context.toast(message: CharSequence) {
+    Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+}

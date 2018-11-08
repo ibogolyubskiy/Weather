@@ -1,111 +1,116 @@
-package com.elpassion.crweather
+package com.elpassion.weather.utils
 
 import android.graphics.Color
-import com.elpassion.crweather.OpenWeatherMapApi.DailyForecast
+import com.elpassion.weather.data.ApiService.DailyForecast
+import com.elpassion.weather.Chart
+import com.elpassion.weather.Line
+import com.elpassion.weather.Point
 import java.lang.Math.signum
 
-private val CACHE_TIME = 1000L * 60L * 60L // one hour
+private const val CACHE_TIME = 1000L * 60L * 60L // one hour
 
-private val BLUE_LIGHT = 0x220000FF
-private val BLACK_LIGHT = 0x22000000
-
+private const val BLUE_LIGHT = 0x220000FF
+private const val BLACK_LIGHT = 0x22000000
 
 val Float.asMeasurementString get() = "%.0f".format(this)
 
 /**
  * WARNING: The list has to have at least two forecasts
  */
-val List<DailyForecast>.tempChart: Chart get() {
+val List<DailyForecast>.tempChart: Chart
+    get() {
 
-    require(size > 1) { "Can not create a chart with less then two measurements" } // maybe: return some chart for just one measurement?
+        require(size > 1) { "Can not create a view_chart with less then two measurements" } // maybe: return some chart for just one measurement?
 
-    return Chart(
+        return Chart(
             inputRange = first().dt.toFloat()..last().dt.toFloat(),
             outputRange = 0f..40f,
             lines = listOf(
-                    Line("Maximum temperature (\u2103)", BLUE_LIGHT, toPoints { temp?.max }),
-                    Line("Minimum temperature (\u2103)", BLACK_LIGHT, toPoints { temp?.min }),
-                    Line("Day temperature (\u2103)", Color.BLUE, toPoints { temp?.day }),
-                    Line("Night temperature (\u2103)", Color.BLACK, toPoints { temp?.night })
+                Line("Maximum temperature (\u2103)", BLUE_LIGHT, toPoints { temp?.max }),
+                Line("Minimum temperature (\u2103)", BLACK_LIGHT, toPoints { temp?.min }),
+                Line("Day temperature (\u2103)", Color.BLUE, toPoints { temp?.day }),
+                Line("Night temperature (\u2103)", Color.BLACK, toPoints { temp?.night })
             )
-    )
-}
+        )
+    }
 
 /**
  * WARNING: The list has to have at least two forecasts
  */
-val List<DailyForecast>.humidityAndCloudinessChart: Chart get() {
+val List<DailyForecast>.humidityAndCloudinessChart: Chart
+    get() {
 
-    require(size > 1) { "Can not create a chart with less then two measurements" } // maybe: return some chart for just one measurement?
+        require(size > 1) { "Can not create a view_chart with less then two measurements" } // maybe: return some chart for just one measurement?
 
-    return Chart(
+        return Chart(
             inputRange = first().dt.toFloat()..last().dt.toFloat(),
             outputRange = 0f..100f,
             lines = listOf(
-                    Line("Humidity (%)", Color.GREEN, toPoints { humidity.takeIf { it != 0 }?.toFloat() }),
-                    Line("Cloudiness (%)", Color.BLUE, toPoints { clouds.takeIf { it != 0 }?.toFloat() })
+                Line("Humidity (%)", Color.GREEN, toPoints { humidity.takeIf { it != 0 }?.toFloat() }),
+                Line("Cloudiness (%)", Color.BLUE, toPoints { clouds.takeIf { it != 0 }?.toFloat() })
             )
-    )
-}
+        )
+    }
 
 /**
  * WARNING: The list has to have at least two forecasts
  */
-val List<DailyForecast>.windSpeedChart: Chart get() {
+val List<DailyForecast>.windSpeedChart: Chart
+    get() {
 
-    require(size > 1) { "Can not create a chart with less then two measurements" } // maybe: return some chart for just one measurement?
+        require(size > 1) { "Can not create a view_chart with less then two measurements" } // maybe: return some chart for just one measurement?
 
-    return Chart(
+        return Chart(
             inputRange = first().dt.toFloat()..last().dt.toFloat(),
             outputRange = 0f..15f,
             lines = listOf(
-                    Line("Wind speed (meter/s)", Color.DKGRAY, toPoints { speed })
+                Line("Wind speed (meter/s)", Color.DKGRAY, toPoints { speed })
             )
-    )
-}
+        )
+    }
 
 /**
  * WARNING: The list has to have at least two forecasts
  */
-val List<DailyForecast>.pressureChart: Chart get() {
+val List<DailyForecast>.pressureChart: Chart
+    get() {
 
-    require(size > 1) { "Can not create a chart with less then two measurements" } // maybe: return some chart for just one measurement?
+        require(size > 1) { "Can not create a view_chart with less then two measurements" } // maybe: return some chart for just one measurement?
 
-    return Chart(
+        return Chart(
             inputRange = first().dt.toFloat()..last().dt.toFloat(),
             outputRange = 950f..1050f,
             lines = listOf(
-                    Line("Pressure (hPa)", Color.RED, toPoints { pressure })
+                Line("Pressure (hPa)", Color.RED, toPoints { pressure })
             )
-    )
-}
+        )
+    }
 
 /**
  * WARNING: The list has to have at least two forecasts
  */
-val List<DailyForecast>.rainAndSnowChart: Chart get() {
+val List<DailyForecast>.rainAndSnowChart: Chart
+    get() {
 
-    require(size > 1) { "Can not create a chart with less then two measurements" } // maybe: return some chart for just one measurement?
+        require(size > 1) { "Can not create a view_chart with less then two measurements" } // maybe: return some chart for just one measurement?
 
-    return Chart(
+        return Chart(
             inputRange = first().dt.toFloat()..last().dt.toFloat(),
             outputRange = 0f..100f,
             lines = listOf(
-                    Line("Rain (%)", Color.BLUE, toPoints { rain }),
-                    Line("Snow (%)", Color.CYAN, toPoints { snow })
+                Line("Rain (%)", Color.BLUE, toPoints { rain }),
+                Line("Snow (%)", Color.CYAN, toPoints { snow })
             )
-    )
-}
+        )
+    }
 
 fun Map<String, List<Chart>>.getFreshCharts(city: String) = get(city)?.takeIf {
     it.isNotEmpty() && it.first().timeMs + CACHE_TIME > currentTimeMs
 }
 
-private fun List<DailyForecast>.toPoints(toValue: DailyForecast.() -> Float?)
-        = mapNotNull { it.toPointOrNull(toValue) }
+private fun List<DailyForecast>.toPoints(toValue: DailyForecast.() -> Float?) = mapNotNull { it.toPointOrNull(toValue) }
 
-private fun DailyForecast.toPointOrNull(toValue: DailyForecast.() -> Float?)
-        = toValue()?.let { Point(dt.toFloat(), it) }
+private fun DailyForecast.toPointOrNull(toValue: DailyForecast.() -> Float?) = toValue()?.let { Point(dt.toFloat(), it) }
 
 
 fun Chart.deepCopy() = copy(lines = lines.map { it.deepCopy() })
