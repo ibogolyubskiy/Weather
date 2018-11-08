@@ -36,6 +36,7 @@ class MainActivity : AppCompatActivity() {
             toggle.syncState()
         }
         navigation.setNavigationItemSelectedListener {
+            drawer?.closeDrawers()
             model.action(SelectCity(it.title.toString()))
         }
         recycler.adapter = adapter
