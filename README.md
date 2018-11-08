@@ -1,4 +1,4 @@
-# Cr Weather
+Weather
 Android demo app with kotlin coroutines and architecture components library
 
 - Blog post
