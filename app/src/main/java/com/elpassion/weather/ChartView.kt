@@ -12,7 +12,9 @@ import com.elpassion.weather.utils.moveABitTo
 import com.elpassion.weather.utils.pointAtTheEnd
 import com.elpassion.weather.utils.resetPoints
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.delay
@@ -21,7 +23,8 @@ import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
-
+@ObsoleteCoroutinesApi
+@ExperimentalCoroutinesApi
 class ChartView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,

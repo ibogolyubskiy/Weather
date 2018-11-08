@@ -6,7 +6,7 @@ apply plugin: 'kotlin-kapt'
 android {
     compileSdkVersion 28
     defaultConfig {
-        applicationId "com.elpassion.crweather"
+        applicationId "com.elpassion.weather"
         minSdkVersion 19
         targetSdkVersion 28
         versionCode 1
@@ -39,9 +39,13 @@ dependencies {
     implementation "android.arch.lifecycle:extensions:$lifecycle_version"
 
     //retrofit
-    implementation "com.squareup.retrofit2:retrofit:2.4.0"
+    implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
+    implementation "com.squareup.retrofit2:converter-moshi:$retrofit_version"
+
     implementation "com.squareup.okhttp3:logging-interceptor:3.11.0"
-    implementation "com.squareup.retrofit2:converter-moshi:2.4.0"
+
+    debugImplementation "com.squareup.leakcanary:leakcanary-android:$leak_canary_version"
+    releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$leak_canary_version"
 
     //coroutine
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"

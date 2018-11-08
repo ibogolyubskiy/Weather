@@ -108,16 +108,19 @@ fun Map<String, List<Chart>>.getFreshCharts(city: String) = get(city)?.takeIf {
     it.isNotEmpty() && it.first().timeMs + CACHE_TIME > currentTimeMs
 }
 
-private fun List<DailyForecast>.toPoints(toValue: DailyForecast.() -> Float?) = mapNotNull { it.toPointOrNull(toValue) }
+private fun List<DailyForecast>.toPoints(toValue: DailyForecast.() -> Float?) =
+    mapNotNull { it.toPointOrNull(toValue) }
 
-private fun DailyForecast.toPointOrNull(toValue: DailyForecast.() -> Float?) = toValue()?.let { Point(dt.toFloat(), it) }
+private fun DailyForecast.toPointOrNull(toValue: DailyForecast.() -> Float?) =
+    toValue()?.let { Point(dt.toFloat(), it) }
 
 
 fun Chart.deepCopy() = copy(lines = lines.map { it.deepCopy() })
 
 fun Line.deepCopy() = copy(points = points.map { it.copy() })
 
-fun Chart.resetPoints() = apply { lines.forEach { it.points.forEach { point -> point.x = 0f; point.y = 0f } } }
+fun Chart.resetPoints() =
+    apply { lines.forEach { it.points.forEach { point -> point.x = 0f; point.y = 0f } } }
 
 fun Chart.moveABitTo(destination: Chart, velocities: Chart) {
     for ((lineIdx, line) in lines.withIndex())
@@ -138,17 +141,23 @@ private fun updateVelocity(velocity: Float, currentPosition: Float, destinationP
     return newVelocity
 }
 
-fun Chart.copyAndReformat(model: Chart, defaultNewPoint: Point) = Chart(model.inputRange, model.outputRange, lines.copyAndReformatLines(model.lines, defaultNewPoint), model.timeMs)
+fun Chart.copyAndReformat(model: Chart, defaultNewPoint: Point) =
+    Chart(model.inputRange, model.outputRange,
+          lines.copyAndReformatLines(model.lines, defaultNewPoint), model.timeMs)
 
-private fun List<Line>.copyAndReformatLines(model: List<Line>, defaultPoint: Point) = List(model.size) { idx ->
-    getOrElse(idx) { model[idx] }.copyAndReformat(model[idx], defaultPoint)
-}
+private fun List<Line>.copyAndReformatLines(model: List<Line>, defaultPoint: Point) =
+    List(model.size) { idx ->
+        getOrElse(idx) { model[idx] }.copyAndReformat(model[idx], defaultPoint)
 
-private fun Line.copyAndReformat(model: Line, defaultPoint: Point) = Line(model.name, model.color, points.copyAndReformatPoints(model.points, defaultPoint))
+    }
 
-private fun List<Point>.copyAndReformatPoints(model: List<Point>, defaultPoint: Point) = List(model.size) { idx ->
-    getOrElse(idx) { defaultPoint }.copy()
-}
+private fun Line.copyAndReformat(model: Line, defaultPoint: Point) =
+    Line(model.name, model.color, points.copyAndReformatPoints(model.points, defaultPoint))
+
+private fun List<Point>.copyAndReformatPoints(model: List<Point>, defaultPoint: Point) =
+    List(model.size) { idx ->
+        getOrElse(idx) { defaultPoint }.copy()
+    }
 
 val Chart.pointAtTheEnd get() = Point(inputRange.endInclusive, outputRange.portion(.5f))
 
